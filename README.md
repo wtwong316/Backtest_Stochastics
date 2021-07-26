@@ -1,5 +1,5 @@
 # Backtest_Stochastics
-Codes for Medium article "Backtest Stochastics Fast and Slow Indicator Trading Strategy in Elasticsearch" in Medium
+Codes for Medium article "Backtest Stochastic Fast and Slow Indicator Trading Strategy in Elasticsearch" in Medium
 
 The following steps have been tested with Elasticsearch Server v7.10.1
 
