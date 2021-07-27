@@ -15,8 +15,10 @@ pip install -r requirements.txt
 
 3. After the indices are created and the data are populated, You can try different ticker symbol such as FDEV, FMAT, FTEC, FHLC, FENY, FSTA, FDIS, FQAL, FDLO, FDMO and FUTY to backtest the RSI trading strategy. A report will be shown for the statistical data.
 
-./backtest_stochastics.sh FDEV F_Type
+./backtest_stochastic.sh backtest_stochastic.json FDEV F_Type
 
 or
 
-./backtest_stochastics.sh FDEV S_Type
+./backtest_stochastic.sh backtest_stochastic.json FDEV S_Type
+
+You can follow the backtest_stochastic.json to rewrite a new trading strategy
