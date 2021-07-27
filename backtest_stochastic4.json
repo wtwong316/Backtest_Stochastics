@@ -1,0 +1,35 @@
+{
+    "query": {
+        "bool": {
+            "must": [
+                {"range": {"date": {"gte": "2020-12-15", "lte": "2021-05-31"}}},
+                {"term": {"symbol": "%s"}}
+            ]
+        }
+    },
+    "aggs": {
+        "Backtest_Stochastic": {
+            "date_histogram": {"field": "date", "fixed_interval": "1d", "format": "yyyy-MM-dd"},
+            "aggs": {
+                "Daily": {"avg": {"field": "close"}},
+                "DateStr": {"min": {"field": "date"}},
+                "SDaily": {"bucket_selector": {"buckets_path": {"count": "_count"}, "script": "params.count > 0"}},
+                "MMax": {"moving_fn": {"script": "MovingFunctions.max(values)", "window": 14, "buckets_path": "Daily", "shift": 1}},
+                "MMin": {"moving_fn": {"script": "MovingFunctions.min(values)", "window": 14, "buckets_path": "Daily", "shift": 1}},
+                "FK": {"bucket_script": {"buckets_path": {"Daily": "Daily", "MMin": "MMin", "MMax": "MMax"}, "script": "100 * (params.Daily - params.MMin)/(params.MMax - params.MMin)"}},
+                "FDSK": {"moving_fn": {"script": "MovingFunctions.unweightedAvg(values)", "window": 3, "buckets_path": "FK", "shift": 1}},
+                "SD": {"moving_fn": {"script": "MovingFunctions.unweightedAvg(values)", "window": 3, "buckets_path": "FDSK", "shift": 1}},
+                "FKFD_Diff": {"bucket_script": {"buckets_path": {"FK": "FK", "FDSK": "FDSK"}, "script": "(params.FK - params.FDSK) > 0 ? 1 : ((params.FK - params.FDSK) == 0 ? 0 : -1)"}},
+                "SKSD_Diff": {"bucket_script": {"buckets_path": {"FDSK": "FDSK", "SD": "SD"}, "script": "(params.FDSK - params.SD) > 0 ? 1 : ((params.FDSK - params.SD) == 0 ? 0 : -1)"}},
+                "PRE_FK": {"moving_fn": {"script": "MovingFunctions.sum(values)", "window": 1, "buckets_path": "FK"}},
+                "PRE_FDSK": {"moving_fn": {"script": "MovingFunctions.sum(values)", "window": 1, "buckets_path": "FDSK"}},
+                "PRE_SD": {"moving_fn": {"script": "MovingFunctions.sum(values)", "window": 1, "buckets_path": "SD"}},
+                "F_Diff": {"derivative": {"buckets_path": "FKFD_Diff"}}, "S_Diff": {"derivative": {"buckets_path": "SKSD_Diff"}},
+                "F_Type": {"bucket_script": {"buckets_path": {"F_Diff": "F_Diff", "FK": "FK", "FDSK": "FDSK", "PRE_FK": "PRE_FK", "PRE_FDSK": "PRE_FDSK"}, "script": "((params.F_Diff == -1 || params.F_Diff == -2) && params.PRE_FK > 80 && params.PRE_FDSK > 80 && params.FK > 80 && params.FDSK > 80 && params.FK <= params.FDSK) ? 1 : (((params.F_Diff == 1 || params.F_Diff == 2) && params.PRE_FK < 20 && params.PRE_FDSK < 20 && params.FK < 20 && params.FDSK < 20 && params.FK >= params.FDSK) ? -1 : 0)"}},
+                "S_Type": {"bucket_script": {"buckets_path": {"S_Diff": "S_Diff", "FDSK": "FDSK", "SD": "SD", "PRE_FDSK": "PRE_FDSK", "PRE_SD": "PRE_SD"}, "script": "((params.S_Diff == -1 || params.S_Diff == -2)  && params.PRE_FDSK > 80 && params.PRE_SD > 80 && params.FDSK > 80 && params.SD > 80 && params.FDSK <= params.SD) ? 1 : (((params.S_Diff == 1 || params.S_Diff == 2) && params.PRE_FDSK < 20 && params.PRE_SD < 20 && params.FDSK < 20 && params.SD < 20 && params.FDSK >= params.SD) ? -1 : 0)"}},
+                "S_Date": {"bucket_selector": {"buckets_path": {"DateStr": "DateStr"}, "script": "params.DateStr >= 1610697600000L"}}
+            }
+        }
+    },
+    "from": 0, "size": 0
+}
