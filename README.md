@@ -1,4 +1,4 @@
-# Backtest_Stochastics
+# Backtest_Aroon
 Codes for Medium article "Backtest Aroon Oscillator Trading Strategy in Elasticsearch" in Medium
 (https://medium.com/nerd-for-tech/backtest-aroon-crossover-strategy-in-elasticsearch-ea912afcf907)
 
