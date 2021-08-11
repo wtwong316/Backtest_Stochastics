@@ -1,10 +1,10 @@
 # Backtest_Stochastics
-Codes for Medium article "Backtest Stochastic Fast and Slow Indicator Trading Strategy in Elasticsearch" in Medium
-(https://wtwong316.medium.com/backtest-fast-and-slow-stochastic-crossover-strategy-in-elasticsearch-221d889408e3)
+Codes for Medium article "Backtest Aroon Oscillator Trading Strategy in Elasticsearch" in Medium
+(https://medium.com/nerd-for-tech/backtest-aroon-crossover-strategy-in-elasticsearch-ea912afcf907)
 
 The following steps have been tested with Elasticsearch Server v7.10.1
 
-1. Create an index, fidelity28_fund and the corresponding data are populated. The data for the index, fidelity28_fund, is coming from IEX (Investors Exchange) with the 28 Fidelity commission-free ETFs selected for demo purpose. The time range picked is between 2020-12-15 and 2021-05-31.
+1. Create an index, fidelity28_fund and the corresponding data are populated. The data for the index, fidelity28_fund, is coming from IEX (Investors Exchange) with the 28 Fidelity commission-free ETFs selected for demo purpose. The time range picked is between 2020-01-15 and 2021-05-31.
 
 ./fidelity28_index.sh
 
@@ -16,10 +16,6 @@ pip install -r requirements.txt
 
 3. After the indices are created and the data are populated, You can try different ticker symbol such as FDEV, FMAT, FTEC, FHLC, FENY, FSTA, FDIS, FQAL, FDLO, FDMO and FUTY to backtest the RSI trading strategy. A report will be shown for the statistical data.
 
-./backtest_stochastic.sh backtest_stochastic.json FDEV F_Type
+./backtest_aroon.sh backtest_aroon.json FDEV 
 
-or
-
-./backtest_stochastic.sh backtest_stochastic.json FDEV S_Type
-
-You can follow the backtest_stochastic.json to rewrite a new trading strategy
+You can follow the backtest_aroon.json to rewrite a new trading strategy
